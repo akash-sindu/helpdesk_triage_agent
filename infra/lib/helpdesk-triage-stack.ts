@@ -16,6 +16,7 @@ interface HelpdeskTriageStackProps extends cdk.StackProps {
   frontendOrigin: string;
   triageSecretArn: string;
   groqChatModel: string;
+  qdrantCollection: string;
 }
 
 export class HelpdeskTriageStack extends cdk.Stack {
@@ -44,7 +45,7 @@ export class HelpdeskTriageStack extends cdk.Stack {
       environment: {
         TICKETS_TABLE: tickets.tableName,
         TRIAGE_SECRET_ARN: props.triageSecretArn,
-        QDRANT_COLLECTION: "helpdesk-kb",
+        QDRANT_COLLECTION: props.qdrantCollection,
         GROQ_CHAT_MODEL: props.groqChatModel,
         TRANSFORMERS_CACHE_DIR: "/tmp/transformers-cache",
       },

@@ -4,7 +4,6 @@ import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { QdrantClient } from "@qdrant/js-client-rest";
 import {
-  DEFAULT_COLLECTION_NAME,
   EMBEDDING_DIMENSIONS,
   EMBEDDING_MODEL,
   embedTexts,
@@ -17,8 +16,6 @@ interface Article {
   content: string;
   stub: boolean;
 }
-
-const collectionName = process.env.QDRANT_COLLECTION ?? DEFAULT_COLLECTION_NAME;
 
 function requiredEnv(name: string): string {
   const value = process.env[name];
@@ -35,6 +32,7 @@ function stablePointId(articleId: string): string {
 }
 
 async function main() {
+  const collectionName = requiredEnv("QDRANT_COLLECTION");
   const qdrant = new QdrantClient({
     url: requiredEnv("QDRANT_URL"),
     apiKey: requiredEnv("QDRANT_API_KEY"),

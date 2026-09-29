@@ -37,11 +37,11 @@ npm install
 cp .env.example .env
 ```
 
-Fill in `.env` locally. Do not commit it. Set `GROQ_API_KEY`, `GROQ_CHAT_MODEL`, `QDRANT_URL`, `QDRANT_API_KEY`, and `QDRANT_COLLECTION=helpdesk-kb-minilm`. `GROQ_CHAT_MODEL` must be a model currently enabled for your Groq account that supports JSON mode. The ingestion and sample-query scripts do not need a Groq key; embeddings run locally.
+Fill in `.env` locally. Do not commit it. Set `GROQ_API_KEY`, `GROQ_CHAT_MODEL`, `QDRANT_URL`, `QDRANT_API_KEY`, and `QDRANT_COLLECTION` to the name of your Qdrant collection. The same collection setting is used for ingestion, sample queries, evaluation, and Lambda deployment. `GROQ_CHAT_MODEL` must be a model currently enabled for your Groq account that supports JSON-mode output. The ingestion and sample-query scripts compute embeddings locally and require Qdrant credentials.
 
 ## Seed and Verify Qdrant
 
-The ingestion is separate from Lambda deployment/runtime. It reads the checked-in JSON, computes embeddings locally with Transformers.js, and sends the resulting vectors to Qdrant. It does not call OpenAI or Groq:
+The ingestion is separate from Lambda deployment/runtime. It reads the checked-in JSON, computes embeddings locally with Transformers.js, and sends the resulting vectors to Qdrant:
 
 ```sh
 npm run ingest:kb
@@ -54,7 +54,7 @@ The sample query accepts a custom title and description:
 npm run test:query -- "VPN issue" "The VPN will not connect from home."
 ```
 
-The embedding model changed from the previous OpenAI model, so its scores are not directly comparable. Review scores for relevant and unrelated sample tickets before relying on the configured `0.6` cosine-similarity threshold; adjust the threshold if relevant matches fall below it. The new collection is named `helpdesk-kb-minilm` and uses 384 dimensions with cosine distance. If you created the old 1536-dimensional `helpdesk-kb` collection, leave it alone; ingestion and Lambda use the new collection instead.
+Review cosine-similarity scores for relevant and unrelated sample tickets before relying on the configured `0.6` threshold. Adjust the threshold based on observed results to balance missed relevant matches against unrelated matches.
 
 ## Deploy the Backend
 

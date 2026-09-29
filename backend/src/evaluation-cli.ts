@@ -5,7 +5,6 @@ import { QdrantClient } from "@qdrant/js-client-rest";
 import casesJson from "./evaluation-cases.json" with { type: "json" };
 import type { GoldenCase } from "./evaluation.js";
 import { createJudgeIfEnabled, runEvaluation } from "./evaluation-runner.js";
-import { DEFAULT_COLLECTION_NAME } from "./embeddings.js";
 import type { BinaryClassificationMetrics, MultiClassClassificationMetrics } from "./classification-metrics.js";
 
 loadEnv({ path: process.env.DOTENV_CONFIG_PATH ?? "../.env" });
@@ -99,9 +98,10 @@ async function main() {
   const apiKey = process.env.GROQ_API_KEY;
   const qdrantUrl = process.env.QDRANT_URL;
   const qdrantApiKey = process.env.QDRANT_API_KEY;
+  const collectionName = process.env.QDRANT_COLLECTION;
   const modelName = process.env.GROQ_CHAT_MODEL;
-  if (!apiKey || !qdrantUrl || !qdrantApiKey || !modelName) {
-    throw new Error("Set GROQ_API_KEY, QDRANT_URL, QDRANT_API_KEY, and GROQ_CHAT_MODEL before evaluation.");
+  if (!apiKey || !qdrantUrl || !qdrantApiKey || !collectionName || !modelName) {
+    throw new Error("Set GROQ_API_KEY, QDRANT_URL, QDRANT_API_KEY, QDRANT_COLLECTION, and GROQ_CHAT_MODEL before evaluation.");
   }
   const model = new ChatGroq({ apiKey, model: modelName, temperature: 0, maxRetries: 0, timeout: 12000 });
   const qdrant = new QdrantClient({ url: qdrantUrl, apiKey: qdrantApiKey });
@@ -116,7 +116,7 @@ async function main() {
     judge,
     model,
     qdrant,
-    collectionName: process.env.QDRANT_COLLECTION ?? DEFAULT_COLLECTION_NAME,
+    collectionName,
   });
   printReport(report);
   const outputPath = argument("--output");

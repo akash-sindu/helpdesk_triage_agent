@@ -13,7 +13,7 @@ import {
 import { ChatGroq } from "@langchain/groq";
 import { QdrantClient } from "@qdrant/js-client-rest";
 import { z } from "zod";
-import { DEFAULT_COLLECTION_NAME, embedQuery } from "./embeddings.js";
+import { embedQuery } from "./embeddings.js";
 import { hasValidApiKey } from "./auth.js";
 import { logError, logInfo, logWarn } from "./logging.js";
 import { buildTriageGraph } from "./graph.js";
@@ -63,10 +63,10 @@ function getSecrets() {
 
 async function createGraph() {
   const tableName = process.env.TICKETS_TABLE;
-  const collectionName = process.env.QDRANT_COLLECTION ?? DEFAULT_COLLECTION_NAME;
+  const collectionName = process.env.QDRANT_COLLECTION;
   const model = process.env.GROQ_CHAT_MODEL;
   if (!tableName || !collectionName || !model) {
-    throw new Error("Required Lambda configuration is missing");
+    throw new Error("Required Lambda configuration, including QDRANT_COLLECTION, is missing");
   }
 
   logInfo("triage.graph.initialization.started", {
