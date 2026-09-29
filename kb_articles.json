@@ -1,0 +1,702 @@
+[
+  {
+    "id": "kb-001",
+    "category": "Network & connectivity",
+    "title": "Reconnecting to office WiFi after a password change",
+    "content": "If the office WiFi password has recently changed, your device will keep trying the old credentials. Forget the network on your laptop or phone, then reconnect and enter the new password when prompted. If you're unsure of the current password, check with your local IT point of contact or the network status page. Restarting your WiFi adapter can also clear a stuck connection.",
+    "stub": false
+  },
+  {
+    "id": "kb-002",
+    "category": "Network & connectivity",
+    "title": "Troubleshooting VPN connection failures from home",
+    "content": "VPN failures from home are usually caused by an expired client, a blocked port on your home router, or an outdated client version. Restart the VPN client, confirm your home internet is working, and check that the client is up to date. If the connection still fails, try switching from WiFi to a wired connection, or restart your home router.",
+    "stub": false
+  },
+  {
+    "id": "kb-003",
+    "category": "Network & connectivity",
+    "title": "Fixing no internet access on a wired connection",
+    "content": "A wired connection showing 'no internet access' often means a loose cable or a DHCP issue. Reseat the ethernet cable at both ends, then try releasing and renewing your IP address. If the port itself may be faulty, try a different wall port or patch cable before escalating to a hardware check.",
+    "stub": false
+  },
+  {
+    "id": "kb-004",
+    "category": "Network & connectivity",
+    "title": "Setting up WiFi on a new laptop for the first time",
+    "content": "On a new laptop, open network settings and search for the office WiFi network by name. Select it, enter your standard network credentials, and accept any certificate prompt if asked. If the network doesn't appear, confirm WiFi is enabled in the device's physical settings or airplane mode is off.",
+    "stub": false
+  },
+  {
+    "id": "kb-005",
+    "category": "Network & connectivity",
+    "title": "Diagnosing slow WiFi in shared office spaces",
+    "content": "Slow WiFi in busy areas is often caused by network congestion rather than a fault. Try moving closer to an access point, switching to the 5GHz band if available, and closing bandwidth-heavy background apps. If slowness persists across multiple devices in the same room, it may be a capacity issue worth reporting.",
+    "stub": false
+  },
+  {
+    "id": "kb-006",
+    "category": "Network & connectivity",
+    "title": "Connecting a personal device to the guest network",
+    "content": "Guest network access is separate from the staff network and has its own credentials, usually available from reception or the IT self-service portal. Select the guest SSID, enter the provided passphrase, and note that guest access typically has bandwidth and access restrictions compared to the main network.",
+    "stub": false
+  },
+  {
+    "id": "kb-007",
+    "category": "Network & connectivity",
+    "title": "Fixing intermittent WiFi drops throughout the day",
+    "content": "Intermittent drops can result from power-saving settings on your WiFi adapter switching it off during idle periods. Check your adapter's power management settings and disable 'allow the computer to turn off this device to save power'. Also check for firmware updates on the adapter driver.",
+    "stub": false
+  },
+  {
+    "id": "kb-008",
+    "category": "Network & connectivity",
+    "title": "Configuring a static IP for a lab or shared machine",
+    "content": "Static IPs for shared machines should be requested through IT rather than set manually, to avoid address conflicts on the network. Provide the device's MAC address and intended location, and IT will allocate and configure an appropriate static address for you.",
+    "stub": false
+  },
+  {
+    "id": "kb-009",
+    "category": "Network & connectivity",
+    "title": "Troubleshooting DNS resolution errors",
+    "content": "If internal sites resolve but external ones don't (or vice versa), it's often a DNS configuration issue. Try flushing your local DNS cache and confirming your DNS server settings point to the correct internal resolver. A quick router or adapter restart often clears transient DNS problems too.",
+    "stub": false
+  },
+  {
+    "id": "kb-010",
+    "category": "Network & connectivity",
+    "title": "Setting up eduroam on a mobile device",
+    "content": "Eduroam allows secure WiFi access across participating institutions using your institutional credentials. Search for the 'eduroam' network, enter your username in the format username@institution.domain, and your standard password. Accept the certificate prompt when connecting for the first time on a new device.",
+    "stub": false
+  },
+  {
+    "id": "kb-011",
+    "category": "Network & connectivity",
+    "title": "Fixing a laptop that connects to WiFi but has no internet",
+    "content": "This usually indicates a successful WiFi handshake but a failed internet route \u2014 often a captive portal that needs accepting, or a DNS/DHCP issue. Try opening a browser to trigger any login page, or toggle WiFi off and on to force a fresh IP lease.",
+    "stub": false
+  },
+  {
+    "id": "kb-012",
+    "category": "Network & connectivity",
+    "title": "Troubleshooting VPN split tunneling issues",
+    "content": "If some internal resources are unreachable while VPN-connected but general internet works fine, split tunneling configuration may be routing traffic incorrectly. Confirm with IT whether split tunneling is enabled for your VPN profile and which internal ranges should route through the tunnel.",
+    "stub": false
+  },
+  {
+    "id": "kb-013",
+    "category": "Network & connectivity",
+    "title": "Connecting a printer to the network",
+    "content": "Most office printers are added centrally rather than connected manually. Search the internal print server or self-service portal for the nearest printer by name or location and add it through the standard driver installer rather than a manual IP-based setup.",
+    "stub": false
+  },
+  {
+    "id": "kb-014",
+    "category": "Network & connectivity",
+    "title": "Resolving 'limited connectivity' warnings on Windows",
+    "content": "A 'limited connectivity' warning usually points to a DHCP or gateway issue. Run the built-in network troubleshooter, release and renew your IP address, and confirm the gateway address matches what's expected for your office location. Restarting the network adapter often resolves this quickly.",
+    "stub": false
+  },
+  {
+    "id": "kb-015",
+    "category": "Network & connectivity",
+    "title": "Setting up a mobile hotspot for temporary connectivity",
+    "content": "If office WiFi is down and you need temporary access, a personal mobile hotspot can be used for non-sensitive work in the interim. Be aware this bypasses normal network security controls, so avoid accessing sensitive systems over a hotspot connection where possible.",
+    "stub": false
+  },
+  {
+    "id": "kb-016",
+    "category": "Network & connectivity",
+    "title": "Fixing a WiFi network that shows as connected but pages won't load",
+    "content": "This pattern often points to a proxy misconfiguration. Check your browser and system proxy settings match the expected office configuration, and confirm no manual proxy was accidentally left enabled from a previous network.",
+    "stub": false
+  },
+  {
+    "id": "kb-017",
+    "category": "Network & connectivity",
+    "title": "Troubleshooting Ethernet port not detected",
+    "content": "If a wired port shows no link light and isn't detected by the OS, try a known-good cable and a different port first to rule out a bad cable or faulty wall socket before assuming a device fault.",
+    "stub": false
+  },
+  {
+    "id": "kb-018",
+    "category": "Network & connectivity",
+    "title": "Setting up remote desktop access over VPN",
+    "content": "Remote desktop into an office machine requires an active VPN connection first, then connecting to the machine's internal hostname or IP using your standard remote desktop client. Confirm the target machine is powered on and remote access is enabled on it.",
+    "stub": false
+  },
+  {
+    "id": "kb-019",
+    "category": "Network & connectivity",
+    "title": "Fixing WiFi authentication errors after an OS update",
+    "content": "OS updates occasionally reset saved network profiles or certificate trust. Forget the network and reconnect from scratch, accepting any certificate prompts again, which usually resolves authentication failures introduced by an update.",
+    "stub": false
+  },
+  {
+    "id": "kb-020",
+    "category": "Network & connectivity",
+    "title": "Understanding network maintenance windows and outages",
+    "content": "Planned network maintenance is usually announced in advance via the IT status page or email. If you experience unexpected connectivity loss, check the status page first before assuming a local device fault, as widescale outages are handled centrally.",
+    "stub": false
+  },
+  {
+    "id": "kb-021",
+    "category": "Account & access",
+    "title": "Resetting your account password",
+    "content": "To reset your account password, use the self-service password reset portal and verify your identity via your registered email or authenticator app. Choose a new password meeting the complexity requirements. If you're locked out entirely, contact IT to verify your identity manually.",
+    "stub": false
+  },
+  {
+    "id": "kb-022",
+    "category": "Account & access",
+    "title": "Requesting access to a shared drive or folder",
+    "content": "Access to shared drives is granted by the resource owner or IT, based on your role. Submit a request specifying the exact folder path and the reason for access, and your line manager may need to approve the request depending on the resource's sensitivity.",
+    "stub": false
+  },
+  {
+    "id": "kb-023",
+    "category": "Account & access",
+    "title": "Unlocking an account after too many failed login attempts",
+    "content": "Accounts typically lock automatically after a number of failed login attempts as a security measure and unlock after a set cooldown period, or can be unlocked immediately by IT after identity verification.",
+    "stub": false
+  },
+  {
+    "id": "kb-024",
+    "category": "Account & access",
+    "title": "Setting up two-factor authentication",
+    "content": "Two-factor authentication can be set up through your account security settings using an authenticator app or SMS code. Scan the provided QR code with your authenticator app and enter the generated code to confirm setup. Keep backup codes somewhere safe in case you lose your device.",
+    "stub": false
+  },
+  {
+    "id": "kb-025",
+    "category": "Account & access",
+    "title": "Reporting a suspected phishing email",
+    "content": "If you receive a suspicious email, do not click any links or open attachments. Report it using the built-in phishing report button, or forward it to IT Security directly.",
+    "stub": true
+  },
+  {
+    "id": "kb-026",
+    "category": "Account & access",
+    "title": "Requesting elevated or admin access to a system",
+    "content": "Elevated or admin access requests require manager approval and a documented business justification. Submit a request through the access management system; IT Security will review before any elevated permissions are granted.",
+    "stub": true
+  },
+  {
+    "id": "kb-027",
+    "category": "Account & access",
+    "title": "Changing your registered email address on file",
+    "content": "To update your registered contact email, submit a change request through the account settings portal. A verification link will be sent to both the old and new addresses to confirm the change before it takes effect.",
+    "stub": false
+  },
+  {
+    "id": "kb-028",
+    "category": "Account & access",
+    "title": "Recovering access after losing your authenticator device",
+    "content": "If you've lost the device running your authenticator app, use a saved backup code to log in, then re-register two-factor authentication on a new device from your account security settings. If you have no backup codes, contact IT to verify your identity manually.",
+    "stub": false
+  },
+  {
+    "id": "kb-029",
+    "category": "Account & access",
+    "title": "Requesting a new account for a temporary contractor",
+    "content": "Temporary or contractor accounts are requested by the sponsoring manager through the account provisioning form, specifying the access duration and required system access. Accounts are automatically disabled at the specified end date unless extended.",
+    "stub": false
+  },
+  {
+    "id": "kb-030",
+    "category": "Account & access",
+    "title": "Understanding role-based access levels",
+    "content": "Access levels are tied to your role and department rather than assigned individually in most cases. If your role has changed recently and your access hasn't updated, contact IT with your new role details so your permissions can be reviewed.",
+    "stub": false
+  },
+  {
+    "id": "kb-031",
+    "category": "Account & access",
+    "title": "Fixing 'account disabled' errors at login",
+    "content": "An 'account disabled' message usually indicates the account was deactivated due to inactivity, an offboarding process, or a security flag. Contact IT directly to confirm the reason and, if appropriate, request reactivation.",
+    "stub": false
+  },
+  {
+    "id": "kb-032",
+    "category": "Account & access",
+    "title": "Merging duplicate user accounts",
+    "content": "Duplicate accounts sometimes occur after role or department changes. Report the two account identifiers to IT, who can review and consolidate access history where appropriate rather than leaving both active.",
+    "stub": false
+  },
+  {
+    "id": "kb-033",
+    "category": "Account & access",
+    "title": "Requesting access removal after a role change",
+    "content": "When your role changes, previous access should be reviewed and removed if no longer needed. Your manager can submit an access review request specifying which permissions to retain and which to revoke.",
+    "stub": false
+  },
+  {
+    "id": "kb-034",
+    "category": "Account & access",
+    "title": "Setting up single sign-on for a new application",
+    "content": "New applications requiring single sign-on integration should be requested through IT with the vendor's SSO documentation. This is typically a longer request requiring configuration and testing before rollout to end users.",
+    "stub": false
+  },
+  {
+    "id": "kb-035",
+    "category": "Account & access",
+    "title": "Troubleshooting single sign-on login loops",
+    "content": "A login loop after SSO authentication is often caused by a stale browser session or cookie conflict. Clear cookies for the affected site, or try an incognito/private window, before escalating as a configuration issue.",
+    "stub": false
+  },
+  {
+    "id": "kb-036",
+    "category": "Account & access",
+    "title": "Requesting a password policy exception",
+    "content": "Password policy exceptions (for example for shared service accounts) require security team review and are granted only in limited, documented circumstances. Submit a request with a clear business justification.",
+    "stub": false
+  },
+  {
+    "id": "kb-037",
+    "category": "Account & access",
+    "title": "Reporting unauthorized access to your account",
+    "content": "If you notice logins or activity you don't recognize on your account, change your password immediately and report the incident to IT Security so they can review access logs and take further action.",
+    "stub": true
+  },
+  {
+    "id": "kb-038",
+    "category": "Account & access",
+    "title": "Requesting access to a system after returning from leave",
+    "content": "Accounts inactive during extended leave may be automatically disabled as a security measure. On return, contact IT to reactivate your account; no special access request is usually needed beyond identity verification.",
+    "stub": false
+  },
+  {
+    "id": "kb-039",
+    "category": "Account & access",
+    "title": "Setting up delegated calendar or mailbox access",
+    "content": "Delegated access to a colleague's calendar or mailbox is granted by the mailbox owner through their account settings, or by IT on their behalf with written approval, and can be scoped to specific permission levels such as view-only or full access.",
+    "stub": false
+  },
+  {
+    "id": "kb-040",
+    "category": "Account & access",
+    "title": "Fixing 'access denied' errors on a shared system",
+    "content": "An access denied error usually means either your permissions haven't been provisioned yet or a recent access change hasn't propagated. Wait a short period for changes to sync, and if the issue persists, confirm the original access request was approved.",
+    "stub": false
+  },
+  {
+    "id": "kb-041",
+    "category": "Software & licensing",
+    "title": "Installing approved software from the internal app store",
+    "content": "Most standard software is available for self-service installation through the internal app store or software center. Search for the application by name and select install; administrator approval is not usually required for pre-approved software.",
+    "stub": false
+  },
+  {
+    "id": "kb-042",
+    "category": "Software & licensing",
+    "title": "Requesting a new software license",
+    "content": "New software licenses are requested through the software request portal, specifying the tool name, business justification, and intended users. Requests are reviewed for existing alternatives and budget before approval.",
+    "stub": false
+  },
+  {
+    "id": "kb-043",
+    "category": "Software & licensing",
+    "title": "Fixing an application that won't open or keeps crashing",
+    "content": "First try restarting the application and your machine. If the issue persists, check for pending updates to the application, and try clearing its cache or temporary files if that option is available in its settings.",
+    "stub": false
+  },
+  {
+    "id": "kb-044",
+    "category": "Software & licensing",
+    "title": "Updating software to the latest version",
+    "content": "Most managed applications update automatically through the software center. To manually check for and install updates, open the software center and select 'check for updates', or update directly within the application if it supports self-updating.",
+    "stub": false
+  },
+  {
+    "id": "kb-045",
+    "category": "Software & licensing",
+    "title": "Requesting a license renewal before expiry",
+    "content": "Software licenses nearing expiry should be renewed proactively through the same request portal used for new licenses, referencing the existing license or subscription ID to avoid a lapse in access.",
+    "stub": false
+  },
+  {
+    "id": "kb-046",
+    "category": "Software & licensing",
+    "title": "Installing software not available in the app store",
+    "content": "Software not listed in the standard catalog requires a review request, including a link to the vendor and the intended use case, as it may need security and licensing review before approval.",
+    "stub": false
+  },
+  {
+    "id": "kb-047",
+    "category": "Software & licensing",
+    "title": "Fixing 'this app has been blocked' security warnings",
+    "content": "This warning typically appears when software isn't on the approved list or was downloaded from an unverified source. Install it through the official app store instead, or submit a review request if it isn't yet available there.",
+    "stub": false
+  },
+  {
+    "id": "kb-048",
+    "category": "Software & licensing",
+    "title": "Troubleshooting a failed software installation",
+    "content": "Failed installations are often caused by insufficient disk space or a conflicting existing version. Free up disk space, uninstall any conflicting older version, and retry the installation before escalating.",
+    "stub": false
+  },
+  {
+    "id": "kb-049",
+    "category": "Software & licensing",
+    "title": "Requesting a software license transfer between team members",
+    "content": "When a licensed seat needs to move from one person to another (for example after a role change), submit a transfer request through the license management portal rather than requesting a new license from scratch.",
+    "stub": false
+  },
+  {
+    "id": "kb-050",
+    "category": "Software & licensing",
+    "title": "Understanding named-user vs shared licenses",
+    "content": "Named-user licenses are tied to one individual and can't be shared; shared or floating licenses allow a limited number of concurrent users from a pool. Check your license type in the software portal if you're unsure which applies.",
+    "stub": false
+  },
+  {
+    "id": "kb-051",
+    "category": "Software & licensing",
+    "title": "Fixing a license activation error",
+    "content": "Activation errors often mean the license key has already reached its device limit or is tied to a different account. Deactivate the license on an unused device first, or contact IT if you're unsure how many seats are currently in use.",
+    "stub": false
+  },
+  {
+    "id": "kb-052",
+    "category": "Software & licensing",
+    "title": "Requesting a trial version of new software",
+    "content": "Trials can be requested for evaluation purposes through the software request portal, with a defined evaluation period and a named requester responsible for the trial's use and eventual decision.",
+    "stub": false
+  },
+  {
+    "id": "kb-053",
+    "category": "Software & licensing",
+    "title": "Uninstalling unused or legacy software",
+    "content": "Legacy software no longer in use should be uninstalled to reduce security exposure. Use the software center's uninstall option, or contact IT if the application requires elevated permissions to remove.",
+    "stub": false
+  },
+  {
+    "id": "kb-054",
+    "category": "Software & licensing",
+    "title": "Troubleshooting compatibility issues after an OS upgrade",
+    "content": "Some older software may not be compatible with a newer OS version. Check the vendor's compatibility notes first, and if an update is available, install it; otherwise report the incompatibility so IT can advise on alternatives.",
+    "stub": false
+  },
+  {
+    "id": "kb-055",
+    "category": "Software & licensing",
+    "title": "Requesting bulk licenses for a team or project",
+    "content": "Bulk license requests for multiple users on a project should be submitted together through the software portal, specifying the number of seats and the duration needed, which is often more cost-effective than individual requests.",
+    "stub": false
+  },
+  {
+    "id": "kb-056",
+    "category": "Software & licensing",
+    "title": "Fixing missing features after a license downgrade",
+    "content": "If features have disappeared after a license change, confirm your current license tier in your account settings, as some functionality is tier-gated. Contact IT if you believe the tier was changed in error.",
+    "stub": false
+  },
+  {
+    "id": "kb-057",
+    "category": "Software & licensing",
+    "title": "Setting default applications for file types",
+    "content": "Default application associations can be changed in your operating system's settings under default apps, allowing you to choose which program opens a given file type by default.",
+    "stub": false
+  },
+  {
+    "id": "kb-058",
+    "category": "Software & licensing",
+    "title": "Requesting an accessibility-focused software alternative",
+    "content": "If existing tools don't meet your accessibility needs, contact IT with details of the specific barrier you're facing; alternative or supplementary accessibility software can often be sourced or licensed on request.",
+    "stub": false
+  },
+  {
+    "id": "kb-059",
+    "category": "Software & licensing",
+    "title": "Reporting a software vulnerability or security flaw",
+    "content": "If you discover a potential security vulnerability in installed software, report it directly to IT Security rather than attempting to fix or disclose it yourself, so it can be assessed and patched appropriately.",
+    "stub": true
+  },
+  {
+    "id": "kb-060",
+    "category": "Software & licensing",
+    "title": "Fixing a corrupted application after an update",
+    "content": "If an application misbehaves after an update, try a clean reinstall via the software center, which will remove and reinstall the application cleanly rather than attempting an in-place repair.",
+    "stub": false
+  },
+  {
+    "id": "kb-061",
+    "category": "Hardware",
+    "title": "Requesting a replacement laptop charger or peripheral",
+    "content": "Replacement chargers, mice, and other standard peripherals can be requested through the hardware request portal or collected from the IT service desk, usually same-day for common items in stock.",
+    "stub": false
+  },
+  {
+    "id": "kb-062",
+    "category": "Hardware",
+    "title": "Troubleshooting a laptop that won't turn on",
+    "content": "First confirm the charger is working and the battery has charge by trying a different outlet or charger if available. Hold the power button for 10-15 seconds to force a restart, and check for any indicator lights suggesting a charging fault.",
+    "stub": false
+  },
+  {
+    "id": "kb-063",
+    "category": "Hardware",
+    "title": "Setting up a second monitor",
+    "content": "Connect the monitor via the appropriate cable (HDMI, DisplayPort, or USB-C), then open display settings to detect and arrange the new screen. If it isn't detected automatically, try a different cable or port before escalating.",
+    "stub": false
+  },
+  {
+    "id": "kb-064",
+    "category": "Hardware",
+    "title": "Reporting a lost or stolen device",
+    "content": "If a device has been lost or stolen, report it to IT immediately so it can be remotely locked or wiped. Also report the loss through the appropriate physical security or police channel if required by policy.",
+    "stub": true
+  },
+  {
+    "id": "kb-065",
+    "category": "Hardware",
+    "title": "Requesting a laptop upgrade or replacement",
+    "content": "Laptop replacements are typically issued on a standard refresh cycle, but can be requested earlier if the current device no longer meets performance needs. Submit a request with details of the performance issue for review.",
+    "stub": false
+  },
+  {
+    "id": "kb-066",
+    "category": "Hardware",
+    "title": "Troubleshooting a laptop that runs unusually hot",
+    "content": "Excessive heat can result from dust buildup in vents or a demanding background process. Check task manager for high CPU usage processes, ensure vents aren't obstructed, and avoid using the laptop on soft surfaces that block airflow.",
+    "stub": false
+  },
+  {
+    "id": "kb-067",
+    "category": "Hardware",
+    "title": "Fixing a laptop keyboard with unresponsive keys",
+    "content": "Try cleaning around the affected keys with compressed air first, as debris is a common cause. If specific keys remain unresponsive after cleaning, an external keyboard can be issued while a repair or replacement is arranged.",
+    "stub": false
+  },
+  {
+    "id": "kb-068",
+    "category": "Hardware",
+    "title": "Requesting a docking station for a desk setup",
+    "content": "Docking stations for a fixed desk setup can be requested through the hardware portal, specifying the number of monitors and peripherals you need to connect, so the correct model is issued.",
+    "stub": false
+  },
+  {
+    "id": "kb-069",
+    "category": "Hardware",
+    "title": "Troubleshooting a webcam that isn't detected",
+    "content": "Confirm the webcam isn't disabled in device manager or blocked by a physical privacy shutter. Try a different USB port for external webcams, and check the relevant app has camera permission enabled in system settings.",
+    "stub": false
+  },
+  {
+    "id": "kb-070",
+    "category": "Hardware",
+    "title": "Fixing audio not working through laptop speakers",
+    "content": "Check the correct output device is selected in sound settings, as it can default to a disconnected external device. Test with headphones to isolate whether the issue is the speakers or a system-wide audio setting.",
+    "stub": false
+  },
+  {
+    "id": "kb-071",
+    "category": "Hardware",
+    "title": "Requesting an accessibility peripheral (e.g. ergonomic keyboard or mouse)",
+    "content": "Ergonomic or accessibility peripherals can be requested through the hardware portal, sometimes with support from an occupational health assessment for specific needs, and are usually issued promptly given their role in workplace wellbeing.",
+    "stub": false
+  },
+  {
+    "id": "kb-072",
+    "category": "Hardware",
+    "title": "Troubleshooting a battery that drains unusually fast",
+    "content": "Check battery health in system settings and review which apps are consuming the most power in the background. If the battery is old and health has degraded significantly, a replacement can be requested.",
+    "stub": false
+  },
+  {
+    "id": "kb-073",
+    "category": "Hardware",
+    "title": "Setting up a printer for the first time",
+    "content": "Add the nearest printer through the software center's printer list rather than a manual IP setup. Select the correct model for your floor or department, and the correct driver will install automatically.",
+    "stub": false
+  },
+  {
+    "id": "kb-074",
+    "category": "Hardware",
+    "title": "Fixing a laptop screen with flickering or display issues",
+    "content": "Try adjusting the refresh rate in display settings first, as a mismatch can cause flickering. If flickering persists across different settings, it may indicate a display cable or hardware fault requiring inspection.",
+    "stub": false
+  },
+  {
+    "id": "kb-075",
+    "category": "Hardware",
+    "title": "Requesting additional storage for a device",
+    "content": "If local storage is consistently full, cloud storage is usually the first recommended solution rather than physical hardware upgrades. If physical storage expansion is genuinely needed, submit a request explaining why cloud storage isn't sufficient.",
+    "stub": false
+  },
+  {
+    "id": "kb-076",
+    "category": "Hardware",
+    "title": "Troubleshooting Bluetooth pairing issues",
+    "content": "Remove the device from your Bluetooth list and re-pair it from scratch, ensuring the peripheral is in pairing mode. If pairing fails repeatedly, restart Bluetooth services or the device itself before escalating.",
+    "stub": false
+  },
+  {
+    "id": "kb-077",
+    "category": "Hardware",
+    "title": "Requesting a headset for calls and meetings",
+    "content": "Standard headsets for calls can be requested through the hardware portal and are usually available for same-day collection from the IT service desk for common models.",
+    "stub": false
+  },
+  {
+    "id": "kb-078",
+    "category": "Hardware",
+    "title": "Fixing a mouse or trackpad that's unresponsive",
+    "content": "For a wireless mouse, check the battery and USB receiver connection first. For a trackpad, confirm it hasn't been disabled in settings, which can sometimes happen automatically when an external mouse is connected.",
+    "stub": false
+  },
+  {
+    "id": "kb-079",
+    "category": "Hardware",
+    "title": "Troubleshooting a device that won't charge",
+    "content": "Try a different charging cable and power outlet to rule out a faulty charger. If the device still won't charge with a known-good charger, the charging port itself may need inspection.",
+    "stub": false
+  },
+  {
+    "id": "kb-080",
+    "category": "Hardware",
+    "title": "Requesting equipment for home or hybrid working",
+    "content": "Standard home-working equipment (monitor, keyboard, mouse) can be requested through the hardware portal for hybrid or remote staff, subject to your team's hybrid working policy on equipment provision.",
+    "stub": false
+  },
+  {
+    "id": "kb-081",
+    "category": "Collaboration tools",
+    "title": "Fixing audio or video issues in video calls",
+    "content": "Check the correct microphone and camera are selected in the call app's settings, as it can default to the wrong device. Test both in the app's built-in device check before joining a call if available.",
+    "stub": false
+  },
+  {
+    "id": "kb-082",
+    "category": "Collaboration tools",
+    "title": "Recovering a deleted file from cloud storage",
+    "content": "Deleted files are usually available in the cloud storage recycle bin or trash folder for a limited period. Restore from there directly; if the retention period has passed, contact IT about backup recovery options.",
+    "stub": false
+  },
+  {
+    "id": "kb-083",
+    "category": "Collaboration tools",
+    "title": "Setting up a shared team channel or workspace",
+    "content": "New shared channels or workspaces can usually be created directly by any team member within the collaboration tool, with the option to invite specific colleagues or make it open to the wider team.",
+    "stub": false
+  },
+  {
+    "id": "kb-084",
+    "category": "Collaboration tools",
+    "title": "Troubleshooting screen sharing not working in calls",
+    "content": "Screen sharing failures are often caused by missing OS-level permissions for the call app (particularly on macOS). Check system privacy settings to ensure the app has screen recording permission enabled, then restart the app.",
+    "stub": false
+  },
+  {
+    "id": "kb-085",
+    "category": "Collaboration tools",
+    "title": "Fixing notifications not appearing for a collaboration app",
+    "content": "Check notification settings both within the app and at the operating system level, as either can independently suppress notifications. Also confirm 'do not disturb' or focus modes aren't unintentionally enabled.",
+    "stub": false
+  },
+  {
+    "id": "kb-086",
+    "category": "Collaboration tools",
+    "title": "Requesting a shared mailbox for a team",
+    "content": "Shared team mailboxes can be requested through IT, specifying the mailbox name and the list of team members who should have access, which can be adjusted later as team membership changes.",
+    "stub": false
+  },
+  {
+    "id": "kb-087",
+    "category": "Collaboration tools",
+    "title": "Recovering a message accidentally deleted in a chat app",
+    "content": "Some chat apps retain a short-term deleted message history accessible to admins. If you need a message recovered, note the approximate time and channel and contact IT, though recovery isn't guaranteed for all platforms.",
+    "stub": false
+  },
+  {
+    "id": "kb-088",
+    "category": "Collaboration tools",
+    "title": "Setting up calendar sharing between colleagues",
+    "content": "Calendar sharing permissions can usually be set directly from your own calendar settings, choosing which colleagues can view or edit your calendar and at what level of detail.",
+    "stub": false
+  },
+  {
+    "id": "kb-089",
+    "category": "Collaboration tools",
+    "title": "Troubleshooting file sync issues in cloud storage",
+    "content": "Sync issues are often resolved by pausing and resuming sync from the app's system tray icon. If files remain out of date, check your internet connection and confirm you haven't hit a storage quota limit.",
+    "stub": false
+  },
+  {
+    "id": "kb-090",
+    "category": "Collaboration tools",
+    "title": "Fixing a collaboration app that won't load or connect",
+    "content": "Try restarting the app and confirming your internet connection is stable. If the issue is app-wide rather than just yours, check the vendor's status page before troubleshooting further on your end.",
+    "stub": false
+  },
+  {
+    "id": "kb-091",
+    "category": "Collaboration tools",
+    "title": "Reporting a suspicious link shared in a chat or channel",
+    "content": "If you receive a suspicious link in a chat, channel, or shared document, don't click it. Report the message to IT Security and let the sender know if it might be from a compromised account.",
+    "stub": true
+  },
+  {
+    "id": "kb-092",
+    "category": "Collaboration tools",
+    "title": "Setting up guest access to a collaboration workspace for an external partner",
+    "content": "External guest access requires approval from the workspace owner and is scoped to specific channels rather than full access. Submit a request specifying the guest's email and the channels they need.",
+    "stub": false
+  },
+  {
+    "id": "kb-093",
+    "category": "Collaboration tools",
+    "title": "Troubleshooting poor video call quality on a stable connection",
+    "content": "If call quality is poor despite a good connection, try lowering the video resolution in the app's settings, or switching to audio-only, as this is sometimes a local CPU or app-side bottleneck rather than a network issue.",
+    "stub": false
+  },
+  {
+    "id": "kb-094",
+    "category": "Collaboration tools",
+    "title": "Fixing calendar invites that don't sync properly",
+    "content": "Sync issues between calendar systems are often resolved by removing and re-adding the calendar integration. Confirm both calendars are set to the same timezone, which is a common cause of apparent sync errors.",
+    "stub": false
+  },
+  {
+    "id": "kb-095",
+    "category": "Collaboration tools",
+    "title": "Requesting integration between two collaboration tools",
+    "content": "New integrations between tools (for example a chat app and a task tracker) should be requested through IT, as third-party integrations often require security review before being enabled organization-wide.",
+    "stub": false
+  },
+  {
+    "id": "kb-096",
+    "category": "Collaboration tools",
+    "title": "Troubleshooting being unable to join a scheduled call",
+    "content": "If you can't join a call at the scheduled time, check you're using the correct link, as recurring meetings sometimes generate a new link if rescheduled. Also confirm your account has accepted the calendar invite.",
+    "stub": false
+  },
+  {
+    "id": "kb-097",
+    "category": "Collaboration tools",
+    "title": "Setting appropriate sharing permissions on a shared document",
+    "content": "When sharing a document, choose the narrowest permission level that meets the need (view vs. edit) and avoid organization-wide link sharing for sensitive content, restricting access to named individuals where possible.",
+    "stub": false
+  },
+  {
+    "id": "kb-098",
+    "category": "Collaboration tools",
+    "title": "Fixing duplicate notifications from a collaboration app",
+    "content": "Duplicate notifications often result from being signed into the same app on multiple devices with overlapping notification settings. Review notification settings on each device and disable duplicates on the ones you use less.",
+    "stub": false
+  },
+  {
+    "id": "kb-099",
+    "category": "Collaboration tools",
+    "title": "Recovering access to a workspace after being accidentally removed",
+    "content": "If you've been accidentally removed from a workspace or channel, ask a workspace admin to re-add you directly, which is usually faster than submitting a formal access request for restoration.",
+    "stub": false
+  },
+  {
+    "id": "kb-100",
+    "category": "Collaboration tools",
+    "title": "Reporting misuse of a shared collaboration channel",
+    "content": "If a shared channel is being used inappropriately, report it to your manager or IT so it can be reviewed, rather than removing content or members yourself.",
+    "stub": false
+  }
+]

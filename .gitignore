@@ -1,0 +1,26 @@
+node_modules/
+dist/
+build/
+.env
+.env.*
+!.env.example
+cdk.out/
+cdk.context.json
+coverage/
+.cache/
+.turbo/
+.serverless/
+
+# Generated evaluation reports include full traces and embedding vectors.
+backend/evaluation-*.json
+
+# Local credentials, certificates, logs, and OS files.
+.aws/
+*.pem
+*.key
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
+*.tsbuildinfo
+prompt.md

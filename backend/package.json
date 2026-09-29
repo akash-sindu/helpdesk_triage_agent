@@ -1,0 +1,25 @@
+{
+  "name": "@helpdesk-triage/backend",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "evaluate": "tsx src/evaluation-cli.ts"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.850.0",
+    "@aws-sdk/client-secrets-manager": "^3.850.0",
+    "@aws-sdk/lib-dynamodb": "^3.850.0",
+    "@huggingface/transformers": "^4.3.0",
+    "@langchain/groq": "^1.3.1",
+    "@langchain/langgraph": "^1.4.18",
+    "@qdrant/js-client-rest": "^1.15.0",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.149",
+    "vitest": "^4.1.11"
+  }
+}

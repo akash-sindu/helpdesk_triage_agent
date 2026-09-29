@@ -1,0 +1,26 @@
+{
+  "name": "helpdesk-triage-agent",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "frontend",
+    "infra"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace frontend",
+    "build": "npm run build --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present && npm run typecheck:scripts",
+    "typecheck:scripts": "tsc -p scripts/tsconfig.json --noEmit",
+    "test": "npm run test --workspace backend",
+    "evaluate": "npm run evaluate --workspace backend --",
+    "ingest:kb": "tsx scripts/ingest-kb.ts",
+    "test:query": "tsx scripts/test-query.ts",
+    "cdk": "cdk"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.3",
+    "dotenv": "^16.4.7",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.3"
+  }
+}
