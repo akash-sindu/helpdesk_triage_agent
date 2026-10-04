@@ -4,6 +4,7 @@ import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { QdrantClient } from "@qdrant/js-client-rest";
 import {
+  DEFAULT_COLLECTION_NAME,
   EMBEDDING_DIMENSIONS,
   EMBEDDING_MODEL,
   embedTexts,
@@ -17,6 +18,8 @@ interface Article {
   stub: boolean;
 }
 
+const collectionName = process.env.QDRANT_COLLECTION ?? DEFAULT_COLLECTION_NAME;
+
 function requiredEnv(name: string): string {
   const value = process.env[name];
   if (!value) throw new Error(`${name} must be set in the environment or .env`);
@@ -24,7 +27,10 @@ function requiredEnv(name: string): string {
 }
 
 function stablePointId(articleId: string): string {
-  const bytes = createHash("sha256").update(`helpdesk-kb:${articleId}`).digest().subarray(0, 16);
+  const bytes = createHash("sha256")
+    .update(`${collectionName}:${articleId}`)
+    .digest()
+    .subarray(0, 16);
   bytes[6] = (bytes[6] & 0x0f) | 0x50;
   bytes[8] = (bytes[8] & 0x3f) | 0x80;
   const hex = bytes.toString("hex");
@@ -32,7 +38,6 @@ function stablePointId(articleId: string): string {
 }
 
 async function main() {
-  const collectionName = requiredEnv("QDRANT_COLLECTION");
   const qdrant = new QdrantClient({
     url: requiredEnv("QDRANT_URL"),
     apiKey: requiredEnv("QDRANT_API_KEY"),

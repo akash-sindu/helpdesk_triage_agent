@@ -1,6 +1,9 @@
 import "dotenv/config";
 import { QdrantClient } from "@qdrant/js-client-rest";
-import { embedQuery } from "../backend/src/embeddings.js";
+import {
+  DEFAULT_COLLECTION_NAME,
+  embedQuery,
+} from "../backend/src/embeddings.js";
 
 function requiredEnv(name: string): string {
   const value = process.env[name];
@@ -18,7 +21,7 @@ async function main() {
     apiKey: requiredEnv("QDRANT_API_KEY"),
   });
   const result = await qdrant.query(
-    requiredEnv("QDRANT_COLLECTION"),
+    process.env.QDRANT_COLLECTION ?? DEFAULT_COLLECTION_NAME,
     { query: await embedQuery(`${title}\n${description}`), limit: 5, with_payload: true },
   );
   console.log(

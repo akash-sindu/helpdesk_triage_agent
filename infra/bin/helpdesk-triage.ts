@@ -7,11 +7,12 @@ const app = new cdk.App();
 const frontendOrigin = app.node.tryGetContext("frontendOrigin");
 const triageSecretArn = app.node.tryGetContext("triageSecretArn");
 const groqChatModel = app.node.tryGetContext("groqChatModel");
-const qdrantCollection = process.env.QDRANT_COLLECTION;
+const qdrantCollection =
+  app.node.tryGetContext("qdrantCollection") ?? process.env.QDRANT_COLLECTION;
 
 if (!frontendOrigin || !triageSecretArn || !groqChatModel || !qdrantCollection) {
   throw new Error(
-    "Provide -c frontendOrigin=<frontend URL>, -c triageSecretArn=<Secrets Manager ARN>, -c groqChatModel=<model ID>, and QDRANT_COLLECTION in .env",
+    "Provide -c frontendOrigin=<frontend URL>, -c triageSecretArn=<Secrets Manager ARN>, -c groqChatModel=<model ID>, and -c qdrantCollection=<collection name> (or set QDRANT_COLLECTION in .env)",
   );
 }
 

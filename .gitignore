@@ -13,6 +13,7 @@ coverage/
 
 # Generated evaluation reports include full traces and embedding vectors.
 backend/evaluation-*.json
+eval-runs/
 
 # Local credentials, certificates, logs, and OS files.
 .aws/

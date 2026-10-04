@@ -1,0 +1,108 @@
+name: CI/CD
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: helpdesk-triage-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Validate PR / main branch
+    runs-on: ubuntu-latest
+    env:
+      GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+      GROQ_CHAT_MODEL: ${{ secrets.GROQ_CHAT_MODEL || vars.GROQ_CHAT_MODEL }}
+      QDRANT_URL: ${{ secrets.QDRANT_URL }}
+      QDRANT_API_KEY: ${{ secrets.QDRANT_API_KEY }}
+      QDRANT_COLLECTION: ${{ secrets.QDRANT_COLLECTION }}
+      VITE_API_BASE_URL: ${{ vars.VITE_API_BASE_URL }}
+      VITE_TICKET_API_KEY: ${{ secrets.VITE_TICKET_API_KEY }}
+      FRONTEND_ORIGIN: ${{ vars.FRONTEND_ORIGIN }}
+      TRIAGE_SECRET_ARN: ${{ secrets.TRIAGE_SECRET_ARN }}
+      CDK_DEFAULT_ACCOUNT: ${{ secrets.AWS_ACCOUNT_ID }}
+      CDK_DEFAULT_REGION: ${{ vars.AWS_REGION || 'us-east-1' }}
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type-check the repo
+        run: npm run typecheck
+
+      - name: Run unit tests
+        run: npm test
+
+      - name: Build the frontend and TypeScript projects
+        run: npm run build
+
+      - name: Optional regression gate for prompt / graph changes
+        if: github.event_name == 'pull_request'
+        run: |
+          if git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -Eq '^(prompts/|backend/src/(graph|risk|structured-output|retry|chat-model|evaluation|regression-metrics)|golden-dataset/|scripts/eval/)'; then
+            echo "Detected prompt/graph/eval changes: running regression checks"
+            npm run evaluate -- --level 0
+          else
+            echo "No prompt/graph/eval files changed; skipping regression gate"
+          fi
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GROQ_CHAT_MODEL: ${{ secrets.GROQ_CHAT_MODEL || vars.GROQ_CHAT_MODEL }}
+
+  deploy:
+    name: Deploy Lambda to AWS
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: validate
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ vars.AWS_REGION || 'us-east-1' }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Deploy CDK stack
+        run: |
+          npx cdk deploy \
+            --require-approval never \
+            -c frontendOrigin="${{ vars.FRONTEND_ORIGIN }}" \
+            -c triageSecretArn="${{ secrets.TRIAGE_SECRET_ARN }}" \
+            -c qdrantCollection="${{ secrets.QDRANT_COLLECTION }}" \
+            -c groqChatModel="${{ secrets.GROQ_CHAT_MODEL || vars.GROQ_CHAT_MODEL }}"
+        env:
+          CDK_DEFAULT_ACCOUNT: ${{ secrets.AWS_ACCOUNT_ID }}
+          CDK_DEFAULT_REGION: ${{ vars.AWS_REGION || 'us-east-1' }}
