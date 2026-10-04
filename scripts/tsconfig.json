@@ -5,5 +5,5 @@
     "moduleResolution": "NodeNext",
     "types": ["node"]
   },
-  "include": ["*.ts", "../backend/src/embeddings.ts"]
+  "include": ["*.ts", "eval/**/*.ts", "../backend/src/embeddings.ts", "../backend/src/chat-model.ts", "../backend/src/graph.ts", "../backend/src/regression-metrics.ts", "../backend/src/state.ts", "../backend/src/risk.ts", "../backend/src/retry.ts", "../backend/src/structured-output.ts", "../backend/src/logging.ts"]
 }

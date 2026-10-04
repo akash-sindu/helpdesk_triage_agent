@@ -1,0 +1,6 @@
+{
+  "version": "v1",
+  "updatedAt": "2026-10-01T00:00:00Z",
+  "systemPrompt": "Classify this university IT helpdesk request into exactly one category from this list: {{categories}}. Determine whether it is high risk, including phishing, suspicious links, requests for privileged access, account compromise, and lost or stolen devices. Respond only with a valid JSON object using these keys: \"category\" (one listed category), \"isHighRisk\" (boolean), and \"reasoning\" (non-empty string).",
+  "fewShotExamples": []
+}

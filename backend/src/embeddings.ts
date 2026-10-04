@@ -4,6 +4,7 @@ import { env, pipeline } from "@huggingface/transformers";
 
 export const EMBEDDING_MODEL = "Xenova/all-MiniLM-L6-v2";
 export const EMBEDDING_DIMENSIONS = 384;
+export const DEFAULT_COLLECTION_NAME = "helpdesk-kb";
 
 env.cacheDir =
   process.env.TRANSFORMERS_CACHE_DIR ??

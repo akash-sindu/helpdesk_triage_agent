@@ -37,11 +37,11 @@ npm install
 cp .env.example .env
 ```
 
-Fill in `.env` locally. Do not commit it. Set `GROQ_API_KEY`, `GROQ_CHAT_MODEL`, `QDRANT_URL`, `QDRANT_API_KEY`, and `QDRANT_COLLECTION` to the name of your Qdrant collection. The same collection setting is used for ingestion, sample queries, evaluation, and Lambda deployment. `GROQ_CHAT_MODEL` must be a model currently enabled for your Groq account that supports JSON-mode output. The ingestion and sample-query scripts compute embeddings locally and require Qdrant credentials.
+Fill in `.env` locally. Do not commit it. Set `GROQ_API_KEY`, `GROQ_CHAT_MODEL`, `QDRANT_URL`, `QDRANT_API_KEY`, and `QDRANT_COLLECTION=helpdesk-kb`. Use the same value when deploying with `-c qdrantCollection=helpdesk-kb`; the local ingestion and sample-query scripts default to that collection name unless you override it in the environment. `GROQ_CHAT_MODEL` must be a model currently enabled for your Groq account that supports JSON mode. The ingestion and sample-query scripts do not need a Groq key; embeddings run locally.
 
 ## Seed and Verify Qdrant
 
-The ingestion is separate from Lambda deployment/runtime. It reads the checked-in JSON, computes embeddings locally with Transformers.js, and sends the resulting vectors to Qdrant:
+The ingestion is separate from Lambda deployment/runtime. It reads the checked-in JSON, computes embeddings locally with Transformers.js, and sends the resulting vectors to Qdrant. It does not call OpenAI or Groq:
 
 ```sh
 npm run ingest:kb
@@ -54,7 +54,7 @@ The sample query accepts a custom title and description:
 npm run test:query -- "VPN issue" "The VPN will not connect from home."
 ```
 
-Review cosine-similarity scores for relevant and unrelated sample tickets before relying on the configured `0.6` threshold. Adjust the threshold based on observed results to balance missed relevant matches against unrelated matches.
+The embedding model changed from the previous OpenAI model, so its scores are not directly comparable. Review scores for relevant and unrelated sample tickets before relying on the configured `0.6` cosine-similarity threshold; adjust the threshold if relevant matches fall below it. The configured collection is named `helpdesk-kb` and uses 384 dimensions with cosine distance. If you created a different collection name in Qdrant, use that exact name consistently in `QDRANT_COLLECTION`, the CDK context, and the Secrets Manager value.
 
 ## Deploy the Backend
 
@@ -65,16 +65,18 @@ Create a random API key for this demo and store it with the provider credentials
   "GROQ_API_KEY": "your Groq API key",
   "QDRANT_URL": "your Qdrant Cloud URL",
   "QDRANT_API_KEY": "your Qdrant Cloud API key",
+  "QDRANT_COLLECTION": "helpdesk-kb",
   "TICKET_API_KEY": "your generated 64-character API key"
 }
 ```
 
-Set `CDK_DEFAULT_ACCOUNT` and `CDK_DEFAULT_REGION` in the environment. Deploy with the frontend origin, secret ARN, and the Groq model ID you selected:
+Set `CDK_DEFAULT_ACCOUNT` and `CDK_DEFAULT_REGION` in the environment. Deploy with the frontend origin, secret ARN, collection name, and the Groq model ID you selected:
 
 ```sh
 npx cdk deploy \
   -c frontendOrigin=http://localhost:5173 \
   -c triageSecretArn=arn:aws:secretsmanager:REGION:ACCOUNT:secret:SECRET_NAME \
+  -c qdrantCollection=helpdesk-kb \
   -c groqChatModel=YOUR_GROQ_MODEL_ID
 ```
 
@@ -97,6 +99,20 @@ npm run typecheck
 npm test
 npm run build
 ```
+
+## Prompt Regression Checks
+
+The aggregate pass rate weights easy cases twice as heavily as medium and low-confidence cases; ambiguous and edge cases count less. Individual case outcomes remain visible in the report, and risk-case false negatives bypass weighting and are critical against a previously passing baseline.
+
+GitHub Actions evaluates the classify and draft nodes directly when a pull request changes files under `prompts/`, the owning graph/risk logic, the golden dataset, or the evaluation runner. The 50 hand-labeled cases are stored in `golden-dataset/v1.json`; expected categories use the five categories in the current agent and citations use IDs from `kb_articles.json`. Cases include an expected category, risk label, routed outcome, cited article IDs, difficulty, and a short rationale. Notes explain judgment calls and are not sent to the model.
+
+Add a case by appending a unique ID and explicitly setting all expected labels. Keep easy examples unambiguous, explain the preferred side of category boundaries, and include risk cases for phishing, privileged access, suspected compromise, and missing devices. For non-risk escalations, set a fixed `retrieval_score` below the graph's `0.6` confidence threshold; this isolates confidence routing from the independent risk route. Resolved cases use the real KB articles named in `expected_cited_article_ids`, which are supplied directly to the draft node so retrieval variance cannot affect draft scoring.
+
+The evaluator records exact category, risk, route, and citation-validity scores, plus per-call latency and provider token usage where returned. Comparison warning and critical thresholds default to 3 and 8 percentage points (`EVAL_WARNING_THRESHOLD=0.03`, `EVAL_CRITICAL_THRESHOLD=0.08`). They are configurable as decimal fractions from 0 to 1. The thresholds catch meaningful changes without alerting on a single general-purpose case; category-level deltas are checked as well. Any risk-case change from correctly detected to missed is critical regardless of aggregate percentage because one missed security-sensitive ticket is not interchangeable with a routine category error. A seven-run moving average separately warns on slow drift (`EVAL_DRIFT_MIN=0.90`, `EVAL_RISK_DRIFT_MIN=0.98`).
+
+Set `GROQ_API_KEY` and optionally `GROQ_CHAT_MODEL`, `SLACK_WEBHOOK_URL`, `EVAL_CONCURRENCY` (1–10), and the threshold variables in the environment. CI reads the API key from the `GROQ_API_KEY` repository secret and keeps main-branch run history in an Actions cache. Each run uploads a static HTML report with an inline SVG trend chart. Critical results block the workflow; warnings are reported in the PR summary and Slack when configured.
+
+Run the same check locally with `npm run eval:regression`. It writes snapshots under `eval-runs/history/` and the report to `eval-runs/regression-report.html`. The run calls Groq and incurs provider cost; ordinary unit tests do not.
 
 ## Agent Evaluation
 

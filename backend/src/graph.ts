@@ -1,4 +1,6 @@
 import { END, START, StateGraph } from "@langchain/langgraph";
+import classifyPrompt from "../../prompts/classify/v1.json" with { type: "json" };
+import draftPrompt from "../../prompts/draft/v1.json" with { type: "json" };
 import { OutputParserException } from "@langchain/core/output_parsers";
 import { ChatGroq } from "@langchain/groq";
 import { QdrantClient } from "@qdrant/js-client-rest";
@@ -22,6 +24,10 @@ import {
 
 const CONFIDENCE_THRESHOLD = 0.6;
 
+export function hasLowConfidenceMatch(topMatchScore: number | null): boolean {
+  return topMatchScore === null || topMatchScore < CONFIDENCE_THRESHOLD;
+}
+
 const classificationSchema = z.object({
   category: z.enum(CATEGORIES),
   isHighRisk: z.boolean(),
@@ -32,6 +38,182 @@ const draftSchema = z.object({
   response: z.string().min(1),
   citedArticleIds: z.array(z.string()),
 });
+
+export interface NodeTokenUsage {
+  inputTokens: number;
+  outputTokens: number;
+  totalTokens: number;
+}
+
+export interface NodeModelResult<T> {
+  value: T;
+  tokenUsage: NodeTokenUsage | null;
+}
+
+export interface ClassificationResult {
+  category: z.infer<typeof classificationSchema>["category"];
+  isHighRisk: boolean;
+  llmRisk: boolean;
+  keywordRisk: boolean;
+  reasoning: string;
+}
+
+function tokenUsageFromOutput(output: unknown): NodeTokenUsage | null {
+  if (typeof output !== "object" || output === null || !("raw" in output)) {
+    return null;
+  }
+  const raw = output.raw;
+  if (typeof raw !== "object" || raw === null || !("usage_metadata" in raw)) {
+    return null;
+  }
+  const usage = raw.usage_metadata;
+  if (typeof usage !== "object" || usage === null) return null;
+  const record = usage as Record<string, unknown>;
+  const inputTokens = record.input_tokens;
+  const outputTokens = record.output_tokens;
+  const totalTokens = record.total_tokens;
+  if (
+    typeof inputTokens !== "number" ||
+    typeof outputTokens !== "number" ||
+    typeof totalTokens !== "number"
+  ) {
+    return null;
+  }
+  return { inputTokens, outputTokens, totalTokens };
+}
+
+export async function classifyTicket(
+  chatModel: ChatGroq,
+  ticket: Pick<TriageState, "title" | "description">,
+): Promise<NodeModelResult<ClassificationResult>> {
+  const classifier = chatModel.withStructuredOutput(classificationSchema, {
+    name: "helpdesk_classification",
+    method: "jsonMode",
+    includeRaw: true,
+  });
+  let output: unknown;
+  try {
+    output = await classifier.invoke(
+      [
+        [
+          "system",
+          classifyPrompt.systemPrompt.replace(
+            "{{categories}}",
+            CATEGORIES.join(", "),
+          ),
+        ],
+        ["human", `Title: ${ticket.title}\nDescription: ${ticket.description}`],
+      ],
+      { timeout: 12000 },
+    );
+  } catch (error) {
+    if (error instanceof z.ZodError || error instanceof OutputParserException) {
+      throw new NodeFailure(
+        "invalid_output",
+        "Groq classification response could not be parsed as the expected JSON schema",
+        { parser: "groq_structured_output", sourceErrorName: error.name },
+      );
+    }
+    throw error;
+  }
+  const parsed = classificationSchema.safeParse(
+    normalizeClassificationOutput(unwrapStructuredOutput(output)),
+  );
+  if (!parsed.success) {
+    throw new NodeFailure(
+      "invalid_output",
+      "Groq classification response did not match the expected schema",
+      {
+        issues: parsed.error.issues.map((issue) => ({
+          path: issue.path.join("."),
+          code: issue.code,
+        })),
+      },
+    );
+  }
+  const keywordRisk = detectKeywordRisk(ticket.title, ticket.description);
+  return {
+    value: {
+      ...parsed.data,
+      isHighRisk: keywordRisk || parsed.data.isHighRisk,
+      llmRisk: parsed.data.isHighRisk,
+      keywordRisk,
+    },
+    tokenUsage: tokenUsageFromOutput(output),
+  };
+}
+
+export async function draftTicketResponse(
+  chatModel: ChatGroq,
+  ticket: Pick<TriageState, "title" | "description">,
+  articles: TriageState["retrievedArticleContent"],
+): Promise<NodeModelResult<z.infer<typeof draftSchema>>> {
+  const retrievedIds = new Set(articles.map((article) => article.articleId));
+  const context = articles
+    .map(
+      (article) =>
+        `Article ID: ${article.articleId}\nTitle: ${article.title}\nContent: ${article.content}`,
+    )
+    .join("\n\n");
+  if (context.length === 0) {
+    throw new NodeFailure(
+      "api_error",
+      "No retrieved article content is available",
+    );
+  }
+  const draftModel = chatModel.withStructuredOutput(draftSchema, {
+    name: "helpdesk_response",
+    method: "jsonMode",
+    includeRaw: true,
+  });
+  let output: unknown;
+  try {
+    output = await draftModel.invoke(
+      [
+        ["system", draftPrompt.systemPrompt],
+        [
+          "human",
+          `Ticket title: ${ticket.title}\nTicket description: ${ticket.description}\n\nRetrieved knowledge-base articles:\n${context}`,
+        ],
+      ],
+      { timeout: 12000 },
+    );
+  } catch (error) {
+    if (error instanceof z.ZodError || error instanceof OutputParserException) {
+      throw new NodeFailure(
+        "invalid_output",
+        "Groq draft response could not be parsed as the expected JSON schema",
+        { parser: "groq_structured_output", sourceErrorName: error.name },
+      );
+    }
+    throw error;
+  }
+  const parsed = draftSchema.safeParse(
+    normalizeDraftOutput(unwrapStructuredOutput(output)),
+  );
+  if (!parsed.success) {
+    throw new NodeFailure(
+      "invalid_output",
+      "Groq draft response did not match the expected schema",
+      {
+        issues: parsed.error.issues.map((issue) => ({
+          path: issue.path.join("."),
+          code: issue.code,
+        })),
+      },
+    );
+  }
+  if (
+    parsed.data.citedArticleIds.length === 0 ||
+    parsed.data.citedArticleIds.some((id) => !retrievedIds.has(id))
+  ) {
+    throw new NodeFailure(
+      "invalid_output",
+      "Draft citations must reference retrieved article IDs",
+    );
+  }
+  return { value: parsed.data, tokenUsage: tokenUsageFromOutput(output) };
+}
 
 export interface TriageDependencies {
   chatModel: ChatGroq;
@@ -58,68 +240,13 @@ export function buildTriageGraph(dependencies: TriageDependencies) {
       node: "classify",
       ticketId: state.ticketId,
     });
-    const keywordRisk = detectKeywordRisk(state.title, state.description);
-    const classifier = dependencies.chatModel.withStructuredOutput(
-      classificationSchema,
-      {
-        name: "helpdesk_classification",
-        method: "jsonMode",
-        includeRaw: true,
-      },
+    const result = await runWithRetry(state, "classify", async () =>
+      (await classifyTicket(dependencies.chatModel, state)).value,
     );
-    const result = await runWithRetry(state, "classify", async () => {
-      let output: unknown;
-      try {
-        output = await classifier.invoke(
-          [
-            [
-              "system",
-              `Classify this university IT helpdesk request into exactly one category from this list: ${CATEGORIES.join(", ")}. Determine whether it is high risk, including phishing, suspicious links, requests for privileged access, account compromise, and lost or stolen devices. Respond only with a valid JSON object using these keys: "category" (one listed category), "isHighRisk" (boolean), and "reasoning" (non-empty string).`,
-            ],
-            [
-              "human",
-              `Title: ${state.title}\nDescription: ${state.description}`,
-            ],
-          ],
-          { timeout: 12000 },
-        );
-      } catch (error) {
-        if (
-          error instanceof z.ZodError ||
-          error instanceof OutputParserException
-        ) {
-          throw new NodeFailure(
-            "invalid_output",
-            "Groq classification response could not be parsed as the expected JSON schema",
-            { parser: "groq_structured_output", sourceErrorName: error.name },
-          );
-        }
-        throw error;
-      }
-      const parsed = classificationSchema.safeParse(
-        normalizeClassificationOutput(unwrapStructuredOutput(output)),
-      );
-      if (!parsed.success) {
-        throw new NodeFailure(
-          "invalid_output",
-          "Groq classification response did not match the expected schema",
-          {
-            issues: parsed.error.issues.map((issue) => ({
-              path: issue.path.join("."),
-              code: issue.code,
-            })),
-          },
-        );
-      }
-      return parsed.data;
-    });
-
     if (!result.ok) return errorPatch(result.state);
-
-    const { category, isHighRisk: llmRisk, reasoning } = result.value;
-    const isHighRisk = keywordRisk || llmRisk;
+    const { category, isHighRisk, llmRisk, keywordRisk, reasoning } =
+      result.value;
     logInfo("triage.node.completed", {
-      node: "classify",
       ticketId: state.ticketId,
       category,
       isHighRisk,
@@ -228,7 +355,7 @@ export function buildTriageGraph(dependencies: TriageDependencies) {
       articleIds: articles.map((article) => article.articleId),
     });
 
-    if (topMatchScore === null || topMatchScore < CONFIDENCE_THRESHOLD) {
+    if (hasLowConfidenceMatch(topMatchScore)) {
       return {
         retrievedArticles: articles.map(({ articleId, title, score }) => ({
           articleId,
@@ -293,90 +420,15 @@ export function buildTriageGraph(dependencies: TriageDependencies) {
   };
 
   const draftNode = async (state: TriageState) => {
-    logInfo("triage.node.started", {
-      node: "draft",
-      ticketId: state.ticketId,
-      retrievedArticleCount: state.retrievedArticles.length,
-    });
-    const retrievedIds = new Set(
-      state.retrievedArticles.map((article) => article.articleId),
-    );
-    const draftModel = dependencies.chatModel.withStructuredOutput(
-      draftSchema,
-      {
-        name: "helpdesk_response",
-        method: "jsonMode",
-        includeRaw: true,
-      },
-    );
-
-    const result = await runWithRetry(state, "draft", async () => {
-      const context = state.retrievedArticleContent
-        .map(
-          (article) =>
-            `Article ID: ${article.articleId}\nTitle: ${article.title}\nContent: ${article.content}`,
+    const result = await runWithRetry(state, "draft", async () =>
+      (
+        await draftTicketResponse(
+          dependencies.chatModel,
+          state,
+          state.retrievedArticleContent,
         )
-        .join("\n\n");
-      if (context.length === 0) {
-        throw new NodeFailure(
-          "api_error",
-          "No retrieved article content is available",
-        );
-      }
-      let output: unknown;
-      try {
-        output = await draftModel.invoke(
-          [
-            [
-              "system",
-              "Answer the user's IT request using only the provided knowledge-base content. Include only troubleshooting steps explicitly stated in the articles; do not infer ports, firewall settings, causes, or other advice. If the articles do not support a useful answer, say the knowledge base does not specify and recommend IT follow-up. Cite only the article IDs you used. Respond only with a valid JSON object using these keys: response (non-empty string) and citedArticleIds (array of article ID strings).",
-            ],
-            [
-              "human",
-              `Ticket title: ${state.title}\nTicket description: ${state.description}\n\nRetrieved knowledge-base articles:\n${context}`,
-            ],
-          ],
-          { timeout: 12000 },
-        );
-      } catch (error) {
-        if (
-          error instanceof z.ZodError ||
-          error instanceof OutputParserException
-        ) {
-          throw new NodeFailure(
-            "invalid_output",
-            "Groq draft response could not be parsed as the expected JSON schema",
-            { parser: "groq_structured_output", sourceErrorName: error.name },
-          );
-        }
-        throw error;
-      }
-      const parsed = draftSchema.safeParse(
-        normalizeDraftOutput(unwrapStructuredOutput(output)),
-      );
-      if (!parsed.success) {
-        throw new NodeFailure(
-          "invalid_output",
-          "Groq draft response did not match the expected schema",
-          {
-            issues: parsed.error.issues.map((issue) => ({
-              path: issue.path.join("."),
-              code: issue.code,
-            })),
-          },
-        );
-      }
-      if (
-        parsed.data.citedArticleIds.length === 0 ||
-        parsed.data.citedArticleIds.some((id) => !retrievedIds.has(id))
-      ) {
-        throw new NodeFailure(
-          "invalid_output",
-          "Draft citations must reference retrieved article IDs",
-        );
-      }
-      return parsed.data;
-    });
+      ).value,
+    );
 
     if (!result.ok) return errorPatch(result.state);
     logInfo("triage.node.completed", {
