@@ -86,35 +86,6 @@ jobs:
           node-version: 22
           cache: npm
 
-      - name: Diagnose AWS OIDC configuration
-        env:
-          AWS_ROLE_TO_ASSUME: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-        run: |
-          if [ "$AWS_ROLE_TO_ASSUME" = "arn:aws:iam::483299809173:role/github-actions-helpdesk-triage" ]; then
-            echo "Configured AWS role ARN matches the expected role."
-          else
-            echo "::warning::Configured AWS role ARN does not match the expected role."
-          fi
-
-          token="$(curl --fail --silent --show-error \
-            -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=sts.amazonaws.com" | jq -er '.value')"
-          printf '%s' "$token" | node -e '
-            let data = "";
-            process.stdin.setEncoding("utf8");
-            process.stdin.on("data", chunk => data += chunk);
-            process.stdin.on("end", () => {
-              const claims = JSON.parse(Buffer.from(data.trim().split(".")[1], "base64url").toString("utf8"));
-              console.log(JSON.stringify({
-                iss: claims.iss,
-                sub: claims.sub,
-                aud: claims.aud,
-                ref: claims.ref,
-                environment: claims.environment
-              }, null, 2));
-            });
-          '
-
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
